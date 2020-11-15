@@ -1,8 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css">
-<script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-<audio id="player" controls>
-    <source src="https://www.dropbox.com/s/ws00l9d0xdh8zfp/25167.mp3?dl=1" type="audio/mp3" />
-</audio>
+    <head>
+        <link rel="stylesheet" href="https://cdn.plyr.io/3.6.3/plyr.css">
+        <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
+        <script>
+            const player = new Plyr('#player');
+        </script>
+        <audio id="player" controls>
+            <source src="https://www.dropbox.com/s/ws00l9d0xdh8zfp/25167.mp3?dl=1" type="audio/mp3" />
+        </audio>
+    </head>
 </html>
