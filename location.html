@@ -14,15 +14,10 @@
         const text = urlParams.get('text');
 
         // Check if the text contains a URL
-        const urlRegex = /geo?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/;
-        const url = text.match(urlRegex)?.[0];
+        const url = text;
 
         // Redirect to the URL if found, otherwise display an error message
-        if (url) {
-            window.location.replace(url);
-        } else {
-            document.body.innerHTML = '<h1>Error</h1><p>No valid URL found in the provided text.</p>';
-        }
+        window.location.replace(url);
     </script>
 </body>
 </html>
