@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text from URL</title>
+</head>
+<body>
+    <h1>Text from URL</h1>
+    <p id="textDisplay"></p>
+    <button id="openTextBtn">Open Text</button>
+
+    <script>
+        // Get the text from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const text = urlParams.get('text');
+
+        // Display the text on the page
+        const textDisplay = document.getElementById('textDisplay');
+        textDisplay.textContent = text || 'No text provided in the URL.';
+
+        // Open the text in a new window when the button is clicked
+        const openTextBtn = document.getElementById('openTextBtn');
+        openTextBtn.addEventListener('click', () => {
+            const textWindow = window.open('', '_blank');
+            textWindow.document.write(`<pre>${text}</pre>`);
+        });
+    </script>
+</body>
+</html>
