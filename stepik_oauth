@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>гогрокать ❤️ stepik</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #message {
+            margin-bottom: 1rem;
+        }
+        #countdown {
+            font-weight: bold;
+            color: #4a4a4a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="message">Перенаправление в гогрокать через <span id="countdown">1</span> секунду</div>
+        <div>Если перенаправление не произошло, <a id="manual-link" href="#">нажмите здесь</a></div>
+    </div>
+
+    <script>
+        function getCodeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('code');
+        }
+
+        function redirectToTelegramBot(code) {
+            window.location.href = `https://t.me/step_vanish_bot?start=code_${code}`;
+        }
+
+        const code = getCodeFromUrl();
+        if (code) {
+            const countdownElement = document.getElementById('countdown');
+            const manualLink = document.getElementById('manual-link');
+            manualLink.href = `https://t.me/step_vanish_bot?start=code_${code}`;
+
+            let secondsLeft = 1;
+            const countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdownElement.textContent = secondsLeft;
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    redirectToTelegramBot(code);
+                }
+            }, 1000);
+        } else {
+            document.getElementById('message').textContent = 'Ошибка: Токен не найден в URL. Попробуйте открыть страницу авторизации ещё раз.';
+        }
+    </script>
+</body>
+</html>
