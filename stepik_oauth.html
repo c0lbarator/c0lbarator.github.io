@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>гогрокать ❤️ stepik</title>
+    <title>Перенаправление на Telegram бот</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,12 +28,20 @@
             font-weight: bold;
             color: #4a4a4a;
         }
+        noscript {
+            display: block;
+            margin-top: 1rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div id="message">Перенаправление в гогрокать через <span id="countdown">1</span> секунду</div>
+        <div id="message">Перенаправление на Telegram бот через <span id="countdown">5</span> секунд</div>
         <div>Если перенаправление не произошло, <a id="manual-link" href="#">нажмите здесь</a></div>
+        <noscript>
+            <p>Твой браузер не поддерживает JavaScript(либо включен адблок).</p>
+            <p>Пожалуйста, включи выполнение скриптов в браузере/смени браузер либо сделай ссылку сам: https://t.me/step_vanish_bot?start=code_{значение параметра code в адресной строке}</p>
+        </noscript>
     </div>
 
     <script>
@@ -50,9 +58,13 @@
         if (code) {
             const countdownElement = document.getElementById('countdown');
             const manualLink = document.getElementById('manual-link');
-            manualLink.href = `https://t.me/step_vanish_bot?start=code_${code}`;
+            const noscriptLink = document.getElementById('noscript-link');
+            const redirectUrl = `https://t.me/step_vanish_bot?start=code_${code}`;
+            
+            manualLink.href = redirectUrl;
+            noscriptLink.href = redirectUrl;
 
-            let secondsLeft = 1;
+            let secondsLeft = 5;
             const countdownInterval = setInterval(() => {
                 secondsLeft--;
                 countdownElement.textContent = secondsLeft;
@@ -62,7 +74,7 @@
                 }
             }, 1000);
         } else {
-            document.getElementById('message').textContent = 'Ошибка: Токен не найден в URL. Попробуйте открыть страницу авторизации ещё раз.';
+            document.getElementById('message').textContent = 'Ошибка: токен не найден в URL. Попробуй открыть страницу авторизации ещё раз.';
         }
     </script>
 </body>
