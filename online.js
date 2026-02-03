@@ -43,21 +43,28 @@
       }
     });
 
-    // Добавление кнопки источника
-    Lampa.Template.add('button_kinohost', `
-            <div class="full-start__button selector view--online_prestige" data-subtitle="#{kinohost_full_title}" data-source="kinohost">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="2"/>
-                    <path d="M6 6L12 9L6 12V6Z" fill="currentColor"/>
-                </svg>
-                <span>#{kinohost_title}</span>
-            </div>
-        `);
-
+    // Добавление кнопки источника на страницу фильма
     Lampa.Listener.follow('full', function (e) {
       if (e.type == 'complite') {
-        var btn = e.object.activity.render().find('.view--online_prestige');
+        var btn = $(`
+          <div class="full-start__button selector view--kinohost" data-subtitle="Плееры Kinobox">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="9" r="8" stroke="currentColor" stroke-width="2"/>
+              <path d="M6 6L12 9L6 12V6Z" fill="currentColor"/>
+            </svg>
+            <span>Kinohost</span>
+          </div>
+        `);
 
+        // Вставляем кнопку после кнопки торрента или в конец списка кнопок
+        var buttons = e.object.activity.render().find('.view--torrent');
+        if (buttons.length) {
+          buttons.after(btn);
+        } else {
+          e.object.activity.render().find('.full-start__buttons').append(btn);
+        }
+
+        // Обработчик нажатия на кнопку
         btn.on('hover:enter', function () {
           Lampa.Activity.push({
             url: '',
@@ -187,27 +194,54 @@
     };
 
     this.openPlayer = function (element) {
-      // Открываем iframe URL в новой вкладке
-      // Из-за CORS/domain restrictions iframe не может быть встроен напрямую
-      // поэтому открываем в новом окне
-      window.open(element.iframeUrl, '_blank');
+      // Создаем HTML страницу с iframe
+      var htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <title>${element.title} - Kinobox Player</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; overflow: hidden; }
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">Загрузка плеера...</div>
+    <iframe src="${element.iframeUrl}" allowfullscreen frameborder="0" scrolling="no" onload="document.querySelector('.loading').style.display='none'"></iframe>
+</body>
+</html>`;
 
-      // Альтернативный вариант - попробовать встроить через Lampa Player
-      // но это может не сработать из-за domain restrictions
-      /*
-      Lampa.Player.play({
-          url: element.iframeUrl,
-          title: object.movie.title || object.movie.name,
-          quality: {
-              high: element.iframeUrl
-          }
-      });
-      
-      Lampa.Player.playlist([{
-          title: element.title,
-          url: element.iframeUrl
-      }]);
-      */
+      // Создаем Blob URL
+      var blob = new Blob([htmlContent], { type: 'text/html' });
+      var blobUrl = URL.createObjectURL(blob);
+
+      // Открываем в новой вкладке
+      window.open(blobUrl, '_blank');
+
+      // Освобождаем URL через 5 секунд (даем время на загрузку)
+      setTimeout(function () {
+        URL.revokeObjectURL(blobUrl);
+      }, 5000);
     };
 
     this.empty = function (msg) {
