@@ -118,7 +118,7 @@
 
       // Запрос к Kinobox API
       network.silent(
-        'https://api.kinobox.tv/api/players?kinopoisk=' + kinopoiskId,
+        'https://api.kinobox.tv/api/movies/' + kinopoiskId,
         function (data) {
           _this.buildPlayerList(data);
           _this.activity.loader(false);
