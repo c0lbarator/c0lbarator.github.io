@@ -116,15 +116,38 @@
         return;
       }
 
-      // Запрос к Kinobox API
+      // API Kinobox перешел в закрытый режим и требует Origin: https://kinohost.web.app
+      // Используем публичный CORS прокси для обхода ограничений
+      var apiUrl = 'https://api.kinobox.tv/api/players?kinopoisk=' + kinopoiskId;
+      var corsProxy = 'https://api.allorigins.win/raw?url=';
+
+      // Пробуем сначала напрямую, затем через прокси
       network.silent(
-        'https://api.kinobox.tv/api/movies/' + kinopoiskId,
+        apiUrl,
         function (data) {
+          // Успешный прямой запрос
           _this.buildPlayerList(data);
           _this.activity.loader(false);
         },
         function (error) {
-          _this.empty(Lampa.Lang.translate('kinohost_error_load'));
+          // Прямой запрос не сработал, пробуем через CORS прокси
+          network.silent(
+            corsProxy + encodeURIComponent(apiUrl),
+            function (data) {
+              // Парсим, если это строка
+              var jsonData = typeof data === 'string' ? JSON.parse(data) : data;
+              _this.buildPlayerList(jsonData);
+              _this.activity.loader(false);
+            },
+            function (proxyError) {
+              // И прокси не помог
+              _this.empty(Lampa.Lang.translate('kinohost_error_load'));
+            },
+            false,
+            {
+              dataType: 'json'
+            }
+          );
         },
         false,
         {
