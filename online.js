@@ -94,7 +94,8 @@
 
       this.activity.loader(true);
 
-      Lampa.Background.immediately(require('./img/img_load.jpg'));
+      // Устанавливаем фон (опционально)
+      // Lampa.Background.immediately('data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
 
       scroll.render().addClass('torrent-list');
       html.append(scroll.render());
